@@ -15,6 +15,7 @@ Implemented in the repository:
 - Shareable payment request links with QR codes
 - Dedicated payment checkout route at `/pay` that reads and validates request parameters
 - Recent native XLM payment activity loaded from Stellar Horizon
+- Dedicated transaction receipt pages that re-fetch transaction details and operations from Stellar Horizon
 - Explorer links for submitted and retrieved transactions
 - Explicit Testnet messaging and no-secret-key handling
 
@@ -27,6 +28,7 @@ The activity feed currently shows a recent window of native XLM payment operatio
 - Payment requests are shareable links, not invoices or guarantees of settlement.
 - The checkout is Testnet-only. Testnet assets have no real-world monetary value.
 - Recent activity is not yet persisted in an application database and does not include every Stellar operation or asset type.
+- Receipt pages currently target Testnet transaction hashes and depend on Horizon availability.
 - Mainnet support, production monitoring, and a full security review are not part of this prototype.
 
 ## Technology
