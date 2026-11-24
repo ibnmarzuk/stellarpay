@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import type { FormEvent } from "react";
 import {
   Asset,
   BASE_FEE,
@@ -112,7 +113,7 @@ export function WalletConnect() {
     }
   };
 
-  const sendPayment = async (event: React.FormEvent<HTMLFormElement>) => {
+  const sendPayment = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!wallet) return;
 
@@ -195,7 +196,7 @@ export function WalletConnect() {
             </button>
           </div>
 
-          <form onSubmit={sendPayment} className="mt-4 w-full max-w-xl rounded-2xl border border-white/[0.09] bg-[#101621] p-5 text-left sm:p-6">
+          <form id="send" onSubmit={sendPayment} className="mt-4 w-full max-w-xl rounded-2xl border border-white/[0.09] bg-[#101621] p-5 text-left sm:p-6">
             <div className="mb-5 flex items-center gap-3">
               <span className="grid size-10 place-items-center rounded-xl bg-[#8aa5ff]/10 text-[#a9bcff]"><Send size={18} /></span>
               <div>
