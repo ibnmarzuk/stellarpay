@@ -2,23 +2,62 @@
 
 :root {
   color-scheme: dark;
-  --background: #080b12;
-  --foreground: #f4f6fb;
-  --surface: #101621;
-  --surface-raised: #151e2c;
-  --border: rgba(148, 163, 184, 0.14);
-  --muted: #8994a7;
-  --accent: #8aa5ff;
+  --background: #080b11;
+  --foreground: #f6f8fc;
+  --surface: #111722;
+  --muted: #8b95a7;
+  --accent: #635bff;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 body {
   min-height: 100vh;
   margin: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
 }
-::selection { background: #8aa5ff; color: #08101f; }
-button, a { -webkit-tap-highlight-color: transparent; }
+::selection { background: #635bff; color: white; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button, a { outline-offset: 3px; }
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 2px solid #8b85ff;
+}
+.sidebar-shell {
+  background: linear-gradient(180deg, #0c111a 0%, #090d14 100%);
+}
+.topbar { background: rgba(8, 11, 17, 0.84); }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  border-radius: 10px;
+  padding: 0 12px;
+  color: #929bad;
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 160ms ease, background 160ms ease;
+}
+.nav-link:hover { color: #f7f8ff; background: rgba(255,255,255,.045); }
+.nav-link-active {
+  color: #c4c0ff;
+  background: rgba(99,91,255,.13);
+  box-shadow: inset 2px 0 0 #7770ff;
+}
+.balance-panel {
+  background:
+    radial-gradient(ellipse at 83% 15%, rgba(147, 141, 255, .24), transparent 36%),
+    radial-gradient(ellipse at 10% 100%, rgba(99, 91, 255, .2), transparent 45%),
+    linear-gradient(120deg, #24205b 0%, #171a3b 55%, #121b31 100%);
+}
+.balance-orb {
+  position: absolute;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+.balance-orb-one { width: 340px; height: 340px; right: -105px; top: -185px; }
+.balance-orb-two { width: 230px; height: 230px; right: -48px; top: -130px; }
