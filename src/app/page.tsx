@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   ArrowDownLeft,
   ArrowRight,
@@ -120,8 +123,8 @@ export default function Home() {
                   <span className="rounded-full border border-white/15 bg-white/[0.07] px-2.5 py-1 text-[9px] font-semibold tracking-wide text-indigo-100/80">XLM ACCOUNT</span>
                 </div>
                 <div className="relative z-10 mt-9">
-                  <p className="text-[42px] font-semibold tracking-[-0.06em] sm:text-[50px]">— <span className="text-lg font-medium tracking-normal text-indigo-100/65">XLM</span></p>
-                  <p className="mt-2 text-[11px] text-indigo-100/60">Connect your wallet to see your live balance.</p>
+                  <p className="text-[42px] font-semibold tracking-[-0.06em] sm:text-[50px]">{balance ?? "—"} <span className="text-lg font-medium tracking-normal text-indigo-100/65">XLM</span></p>
+                  <p className="mt-2 text-[11px] text-indigo-100/60">{balance === null ? "Connect your wallet to see your live balance." : "Live balance retrieved from Stellar Testnet."}</p>
                 </div>
                 <div className="relative z-10 mt-7 flex flex-wrap gap-2">
                   <a href="#send" className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-[11px] font-semibold text-[#29245e] shadow-lg shadow-black/10 transition hover:bg-indigo-50"><Send size={13} /> Send payment</a>
@@ -158,7 +161,7 @@ export default function Home() {
                   <div><h3 className="text-[13px] font-semibold">Wallet connection</h3><p className="mt-1 text-[10px] text-slate-500">Connect securely to access your account.</p></div>
                   <span className="grid size-9 place-items-center rounded-xl bg-[#635bff]/10 text-[#a7a2ff]"><Wallet size={16} /></span>
                 </div>
-                <WalletConnect />
+                <WalletConnect onBalanceChange={setBalance} />
               </div>
               <div className="rounded-[22px] border border-white/[0.08] bg-[#111722] p-5 sm:p-6">
                 <div className="flex items-center justify-between">
