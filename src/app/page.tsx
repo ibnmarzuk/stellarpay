@@ -1,3 +1,5 @@
+import { WalletConnect } from "@/components/wallet-connect";
+
 import {
   ArrowDownLeft,
   ArrowRight,
@@ -12,7 +14,6 @@ import {
   Plus,
   Send,
   ShieldCheck,
-  Wallet,
   Zap,
 } from "lucide-react";
 
