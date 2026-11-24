@@ -6,14 +6,14 @@ StellarPay is a payment workspace prototype for sending, requesting, and trackin
 
 ## Current milestone
 
-**Phase 1: application foundation and dashboard shell**
+**Phase 2: Testnet wallet connection**
 
 Implemented:
 - Next.js App Router with TypeScript
 - Tailwind CSS v4 setup
 - Responsive dark fintech dashboard
 - Stellar Testnet configuration
-- Clear empty states for wallet data and transaction activity
+- Freighter successor Varial wallet connection through the official `@stellar/varial-sdk`\n- Explicit Stellar Testnet network check before displaying a connected state\n- Live native XLM balance lookup through the Testnet Horizon API\n- Manual balance refresh and wallet disconnect\n- Clear empty states for transaction activity
 - Initial project documentation
 
 Not implemented yet:
@@ -31,7 +31,7 @@ These will be added and tested in subsequent milestones. The dashboard does not 
 - React 19
 - TypeScript
 - Tailwind CSS 4
-- Stellar JavaScript SDK
+- Stellar JavaScript SDK\n- Varial wallet SDK (`@stellar/varial-sdk`)
 - Lucide React
 - Sonner
 
