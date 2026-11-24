@@ -37,6 +37,9 @@ type WalletConnectProps = {
   onBalanceChange?: (balance: string | null) => void;
   onActivityChange?: (activity: PaymentActivity[]) => void;
   onAccountChange?: (address: string | null) => void;
+  initialRecipient?: string;
+  initialAmount?: string;
+  showRequestForm?: boolean;
 };
 
 type WalletState = {
@@ -47,12 +50,12 @@ type WalletState = {
 
 const server = new Server(STELLAR_CONFIG.horizonUrl);
 
-export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChange }: WalletConnectProps) {
+export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChange, initialRecipient = "", initialAmount = "", showRequestForm = true }: WalletConnectProps) {
   const [wallet, setWallet] = useState<WalletState | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [recipient, setRecipient] = useState("");
-  const [amount, setAmount] = useState("");
+  const [recipient, setRecipient] = useState(initialRecipient);
+  const [amount, setAmount] = useState(initialAmount);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [requestAmount, setRequestAmount] = useState("");
   const [requestUrl, setRequestUrl] = useState<string | null>(null);
@@ -238,7 +241,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChan
       setMessage("Enter a valid requested amount with up to 7 decimal places.");
       return;
     }
-    const url = new URL(window.location.href);
+    const url = new URL("/pay", window.location.origin);
     url.searchParams.set("payTo", wallet!.address);
     url.searchParams.set("asset", "XLM");
     url.searchParams.set("network", "testnet");
@@ -289,7 +292,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChan
             {txHash && <a className="mt-3 block break-all text-[10px] leading-5 text-emerald-300 underline underline-offset-4" href={`${STELLAR_CONFIG.explorerUrl}/tx/${txHash}`} target="_blank" rel="noreferrer">View transaction: {txHash}</a>}
           </form>
 
-          <section id="request" className="w-full rounded-xl border border-white/[0.08] bg-[#0c121c] p-4 text-left">
+          {showRequestForm && <section id="request" className="w-full rounded-xl border border-white/[0.08] bg-[#0c121c] p-4 text-left">
             <div className="mb-4 flex items-center gap-2.5">
               <span className="grid size-8 place-items-center rounded-lg bg-[#635bff]/15 text-[#aaa5ff]"><QrCode size={15} /></span>
               <div><h3 className="text-xs font-semibold text-white">Request a payment</h3><p className="mt-0.5 text-[10px] text-slate-500">Create a shareable XLM request</p></div>
@@ -308,7 +311,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChan
               </div>
             )}
             <p className="mt-3 text-[9px] leading-5 text-slate-500">The link shares payment details only. It does not move funds or guarantee payment.</p>
-          </section>
+          </section>}
         </>
       ) : (
         <div className="rounded-xl border border-white/[0.08] bg-[#0c121c] p-4">
