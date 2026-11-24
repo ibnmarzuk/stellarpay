@@ -39,6 +39,8 @@ const metrics = [
 ];
 
 export default function Home() {
+  const [balance, setBalance] = useState<string | null>(null);
+
   return (
     <main className="min-h-screen bg-[#080b11] text-[#f6f8fc]">
       <div className="mx-auto flex min-h-screen max-w-[1680px]">
