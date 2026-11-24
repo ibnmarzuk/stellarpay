@@ -22,8 +22,20 @@ import { Check, Copy, QrCode, RefreshCw, Send, Wallet } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { STELLAR_CONFIG } from "@/lib/stellar/config";
 
+export type PaymentActivity = {
+  id: string;
+  amount: string;
+  asset_type: string;
+  from: string;
+  to: string;
+  transaction_hash: string;
+  created_at: string;
+  type: string;
+};
+
 type WalletConnectProps = {
   onBalanceChange?: (balance: string | null) => void;
+  onActivityChange?: (activity: PaymentActivity[]) => void;
 };
 
 type WalletState = {
@@ -34,7 +46,7 @@ type WalletState = {
 
 const server = new Server(STELLAR_CONFIG.horizonUrl);
 
-export function WalletConnect({ onBalanceChange }: WalletConnectProps) {
+export function WalletConnect({ onBalanceChange, onActivityChange }: WalletConnectProps) {
   const [wallet, setWallet] = useState<WalletState | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -45,6 +57,31 @@ export function WalletConnect({ onBalanceChange }: WalletConnectProps) {
   const [requestUrl, setRequestUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const loadActivity = useCallback(async (address: string) => {
+    try {
+      const response = await server.payments()
+        .forAccount(address)
+        .order("desc")
+        .limit(8)
+        .call();
+      const records = response.records
+        .filter((record) => record.type === "payment" && record.asset_type === "native")
+        .map((record) => ({
+          id: record.id,
+          amount: record.amount,
+          asset_type: record.asset_type,
+          from: record.from,
+          to: record.to,
+          transaction_hash: record.transaction_hash,
+          created_at: record.created_at,
+          type: record.type,
+        }));
+      onActivityChange?.(records);
+    } catch {
+      onActivityChange?.([]);
+    }
+  }, [onActivityChange]);
+
   const loadBalance = useCallback(async (address: string) => {
     try {
       const account = await server.loadAccount(address);
@@ -54,6 +91,7 @@ export function WalletConnect({ onBalanceChange }: WalletConnectProps) {
         current?.address === address ? { ...current, balance } : current,
       );
       onBalanceChange?.(balance);
+      await loadActivity(address);
       setMessage(null);
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response?.status;
@@ -67,7 +105,7 @@ export function WalletConnect({ onBalanceChange }: WalletConnectProps) {
         setMessage("Balance lookup failed. Check your connection and try again.");
       }
     }
-  }, [onBalanceChange]);
+  }, [loadActivity, onBalanceChange]);
 
   const connect = async () => {
     setBusy(true);
@@ -117,6 +155,7 @@ export function WalletConnect({ onBalanceChange }: WalletConnectProps) {
       setTxHash(null);
       setRequestUrl(null);
       onBalanceChange?.(null);
+      onActivityChange?.([]);
       setMessage("Wallet disconnected from StellarPay.");
     } catch {
       setMessage("Could not disconnect the wallet. Try again.");
