@@ -2,38 +2,44 @@
 
 **Payments without borders.**
 
-StellarPay is a payment workspace prototype for sending, requesting, and tracking payments on the Stellar network.
+StellarPay is a Testnet payment workspace prototype for freelancers, digital creators, and small businesses. It is designed to make sending, requesting, and verifying XLM payments on Stellar easier to understand.
 
-## Current milestone
+## Current product scope
 
-**Phase 1: application foundation and dashboard shell**
+Implemented in the repository:
+- Responsive dark fintech dashboard with a Stripe-inspired visual direction
+- Stellar Testnet configuration and network guard
+- Varial wallet connection and disconnection flow
+- Live native XLM balance lookup through Stellar Horizon
+- XLM payment construction, wallet signing, and Horizon submission
+- Shareable payment request links with QR codes
+- Dedicated payment checkout route at `/pay` that reads and validates request parameters
+- Recent native XLM payment activity loaded from Stellar Horizon
+- Explorer links for submitted and retrieved transactions
+- Explicit Testnet messaging and no-secret-key handling
 
-Implemented:
-- Next.js App Router with TypeScript
-- Tailwind CSS v4 setup
-- Responsive dark fintech dashboard
-- Stellar Testnet configuration
-- Clear empty states for wallet data and transaction activity
-- Initial project documentation
+The activity feed currently shows a recent window of native XLM payment operations. Dashboard received and sent figures are calculated from the records currently loaded, not lifetime account totals.
 
-Not implemented yet:
-- Wallet connection
-- Live account balances
-- Payment submission
-- On-chain transaction history
-- Payment request settlement
+## Important limitations
 
-These will be added and tested in subsequent milestones. The dashboard does not currently submit transactions or display fabricated payment activity.
+- The implementation has not yet been verified with a local production build or a full end-to-end wallet test.
+- Wallet provider API compatibility must be checked against the installed Varial SDK version.
+- Payment requests are shareable links, not invoices or guarantees of settlement.
+- The checkout is Testnet-only. Testnet assets have no real-world monetary value.
+- Recent activity is not yet persisted in an application database and does not include every Stellar operation or asset type.
+- Mainnet support, production monitoring, and a full security review are not part of this prototype.
 
 ## Technology
 
-- Next.js 15
-- React 19
+- Next.js App Router
+- React
 - TypeScript
-- Tailwind CSS 4
+- Tailwind CSS
 - Stellar JavaScript SDK
+- Varial wallet SDK
+- Horizon API
+- QRCode React
 - Lucide React
-- Sonner
 
 ## Run locally
 
@@ -47,17 +53,9 @@ npm run dev
 
 Open http://localhost:3000.
 
-## Environment variables
-
-```env
-NEXT_PUBLIC_STELLAR_NETWORK=testnet
-NEXT_PUBLIC_STELLAR_HORIZON=https://horizon-testnet.stellar.org
-NEXT_PUBLIC_STELLAR_EXPLORER=https://stellar.expert/explorer/testnet
-```
-
-These values configure public Stellar Testnet endpoints. Never put wallet secret keys or private credentials in `NEXT_PUBLIC_*` variables.
-
 ## Quality checks
+
+Run these before treating the current milestone as verified:
 
 ```bash
 npm run lint
@@ -65,9 +63,17 @@ npm run typecheck
 npm run build
 ```
 
+Then test the following on Stellar Testnet:
+1. Connect a Testnet wallet and confirm the displayed address and network.
+2. Confirm the balance matches the account on Stellar Expert.
+3. Send a small XLM test payment to another funded Testnet account.
+4. Confirm the transaction hash opens the matching explorer record.
+5. Refresh the dashboard and confirm the payment appears in recent activity.
+6. Create a payment request, open its link in another browser session, and complete the wallet-signed checkout.
+
 ## Network safety
 
-The MVP targets Stellar Testnet. Testnet assets have no real-world value. Wallet signing must happen through a wallet provider. StellarPay must never ask users to paste or upload their secret keys.
+StellarPay targets Stellar Testnet. Testnet assets have no real-world value. Wallet signing must happen through a wallet provider. Never paste, upload, or store wallet secret keys in StellarPay. Review the destination and amount in the wallet before approving a payment.
 
 ## Project links
 
