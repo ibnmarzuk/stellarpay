@@ -14,7 +14,7 @@ Implemented in the repository:
 - XLM payment construction, wallet signing, and Horizon submission
 - Shareable payment request links with QR codes
 - Dedicated payment checkout route at `/pay` that reads and validates request parameters
-- Recent native XLM payment activity loaded from Stellar Horizon
+- Recent native XLM payment activity loaded from Stellar Horizon, with sent and received filters and local search
 - Dedicated transaction receipt pages that re-fetch transaction details and operations from Stellar Horizon
 - Explorer links for submitted and retrieved transactions
 - Explicit Testnet messaging and no-secret-key handling
