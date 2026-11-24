@@ -13,6 +13,7 @@ import {
   Globe2,
   LayoutDashboard,
   Plus,
+  Search,
   Send,
   ShieldCheck,
   Sparkles,
@@ -32,6 +33,8 @@ export default function Home() {
   const [balance, setBalance] = useState<string | null>(null);
   const [activity, setActivity] = useState<PaymentActivity[]>([]);
   const [accountAddress, setAccountAddress] = useState<string | null>(null);
+  const [activityFilter, setActivityFilter] = useState<"all" | "sent" | "received">("all");
+  const [activitySearch, setActivitySearch] = useState("");
   const totalReceived = activity
     .filter((item) => item.to === accountAddress)
     .reduce((sum, item) => sum + Number(item.amount), 0);
@@ -90,8 +93,42 @@ export default function Home() {
               <div className="rounded-[22px] border border-white/[0.08] bg-[#111722] p-5 sm:p-6"><div className="flex items-center justify-between"><div><h3 className="text-[13px] font-semibold">Built for moving money</h3><p className="mt-1 text-[10px] text-slate-500">A more considered way to pay.</p></div><BadgeCheck size={18} className="text-[#a7a2ff]" /></div><div className="mt-5 space-y-4"><div className="flex gap-3"><span className="grid size-8 shrink-0 place-items-center rounded-lg bg-emerald-400/[0.08] text-emerald-300"><ShieldCheck size={15} /></span><div><p className="text-[11px] font-medium">You stay in control</p><p className="mt-1 text-[10px] leading-5 text-slate-500">Your wallet approves every transaction. StellarPay never sees your secret key.</p></div></div><div className="flex gap-3"><span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#635bff]/10 text-[#aaa5ff]"><Globe2 size={15} /></span><div><p className="text-[11px] font-medium">Built on an open network</p><p className="mt-1 text-[10px] leading-5 text-slate-500">Payments are recorded on Stellar and can be checked in the public explorer.</p></div></div></div></div>
             </section>
 
-            <section id="activity" className="overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#111722]"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.07] px-5 py-5 sm:px-6"><div><h3 className="text-[13px] font-semibold">Recent activity</h3><p className="mt-1 text-[10px] text-slate-500">Recent native XLM payments loaded from Stellar Horizon.</p></div><a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#aaa5ff] hover:text-white">Open explorer <ExternalLink size={12} /></a></div>
-              {activity.length ? <div className="divide-y divide-white/[0.06]">{activity.map((item) => { const outgoing = item.from === accountAddress; return <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6"><div className="flex min-w-0 items-center gap-3"><span className={`grid size-9 shrink-0 place-items-center rounded-xl ${outgoing ? "bg-amber-400/[0.08] text-amber-300" : "bg-emerald-400/[0.08] text-emerald-300"}`}>{outgoing ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}</span><div className="min-w-0"><p className="text-[11px] font-medium text-slate-200">{outgoing ? "Sent XLM" : "Received XLM"}</p><p className="mt-1 truncate font-mono text-[9px] text-slate-500">{outgoing ? item.to : item.from}</p><p className="mt-1 text-[9px] text-slate-600">{new Date(item.created_at).toLocaleString()}</p></div></div><div className="text-right"><p className={`text-[12px] font-semibold tabular-nums ${outgoing ? "text-slate-200" : "text-emerald-300"}`}>{outgoing ? "−" : "+"}{Number(item.amount).toFixed(4)} XLM</p><a href={`/receipt/${item.transaction_hash}`} className="mt-1 inline-flex items-center gap-1 text-[9px] text-[#aaa5ff] hover:text-white">View receipt <ArrowRight size={10} /></a></div></div>; })}</div> : <div className="flex flex-col items-center justify-center px-5 py-12 text-center"><span className="grid size-12 place-items-center rounded-2xl border border-white/[0.08] bg-white/[0.025] text-slate-500"><Clock3 size={19} /></span><p className="mt-4 text-[12px] font-medium text-slate-300">No verified payments yet</p><p className="mt-1 max-w-sm text-[10px] leading-5 text-slate-500">Connect your wallet to load recent native XLM payment activity from Stellar Testnet.</p></div>}
+            <section id="activity" className="overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#111722]">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.07] px-5 py-5 sm:px-6">
+                <div><h3 className="text-[13px] font-semibold">Transaction activity</h3><p className="mt-1 text-[10px] text-slate-500">Recent native XLM payments verified through Stellar Horizon.</p></div>
+                <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#aaa5ff] hover:text-white">Open explorer <ExternalLink size={12} /></a>
+              </div>
+              <div className="flex flex-col gap-3 border-b border-white/[0.07] px-5 py-4 sm:px-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  {(["all", "sent", "received"] as const).map((filter) => {
+                    const count = filter === "all" ? activity.length : activity.filter((item) => filter === "sent" ? item.from === accountAddress : item.to === accountAddress).length;
+                    return <button key={filter} type="button" onClick={() => setActivityFilter(filter)} className={`rounded-lg border px-3 py-2 text-[10px] font-medium capitalize transition ${activityFilter === filter ? "border-[#7770ff]/40 bg-[#635bff]/15 text-white" : "border-white/[0.07] bg-[#0b1019] text-slate-400 hover:text-white"}`}>{filter} <span className="ml-1 text-[9px] opacity-60">{count}</span></button>;
+                  })}
+                  <span className="ml-auto text-[9px] text-slate-500">{activity.length} loaded</span>
+                </div>
+                <label className="flex items-center gap-2 rounded-lg border border-white/[0.08] bg-[#0b1019] px-3 py-2.5">
+                  <Search size={13} className="shrink-0 text-slate-500" />
+                  <input value={activitySearch} onChange={(event) => setActivitySearch(event.target.value)} placeholder="Search address, amount or transaction hash" className="w-full bg-transparent text-[10px] text-white outline-none placeholder:text-slate-600" />
+                </label>
+              </div>
+              {(() => {
+                const query = activitySearch.trim().toLowerCase();
+                const filtered = activity.filter((item) => {
+                  const outgoing = item.from === accountAddress;
+                  const matchesFilter = activityFilter === "all" || (activityFilter === "sent" ? outgoing : !outgoing);
+                  const matchesSearch = !query || [item.from, item.to, item.amount, item.transaction_hash].some((value) => value.toLowerCase().includes(query));
+                  return matchesFilter && matchesSearch;
+                });
+                return filtered.length ? <div className="divide-y divide-white/[0.06]">{filtered.map((item) => {
+                  const outgoing = item.from === accountAddress;
+                  return <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+                    <div className="flex min-w-0 items-center gap-3"><span className={`grid size-9 shrink-0 place-items-center rounded-xl ${outgoing ? "bg-amber-400/[0.08] text-amber-300" : "bg-emerald-400/[0.08] text-emerald-300"}`}>{outgoing ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}</span>
+                      <div className="min-w-0"><p className="text-[11px] font-medium text-slate-200">{outgoing ? "Sent XLM" : "Received XLM"}</p><p className="mt-1 truncate font-mono text-[9px] text-slate-500">{outgoing ? item.to : item.from}</p><p className="mt-1 text-[9px] text-slate-600">{new Date(item.created_at).toLocaleString()}</p></div>
+                    </div>
+                    <div className="text-right"><p className={`text-[12px] font-semibold tabular-nums ${outgoing ? "text-slate-200" : "text-emerald-300"}`}>{outgoing ? "−" : "+"}{Number(item.amount).toFixed(4)} XLM</p><a href={`/receipt/${item.transaction_hash}`} className="mt-1 inline-flex items-center gap-1 text-[9px] text-[#aaa5ff] hover:text-white">View receipt <ArrowRight size={10} /></a></div>
+                  </div>;
+                })}</div> : <div className="px-5 py-12 text-center"><p className="text-[12px] font-medium text-slate-300">{activity.length ? "No matching transactions" : "No verified payments yet"}</p><p className="mt-1 text-[10px] leading-5 text-slate-500">{activity.length ? "Try another filter or search term." : "Connect your wallet to load recent native XLM payment activity from Stellar Testnet."}</p></div>;
+              })()}
             </section>
 
             <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-5 text-[10px] text-slate-600"><span>© 2026 StellarPay. Built on Stellar.</span><span className="inline-flex items-center gap-1.5"><Clock3 size={12} /> Testnet prototype · No real funds</span></footer>
