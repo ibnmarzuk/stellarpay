@@ -18,7 +18,8 @@ import {
   requestAccess,
   signTransaction,
 } from "@stellar/varial-sdk";
-import { RefreshCw, Send, Wallet } from "lucide-react";
+import { Check, Copy, QrCode, RefreshCw, Send, Wallet } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { STELLAR_CONFIG } from "@/lib/stellar/config";
 
 type WalletState = {
@@ -35,7 +36,7 @@ export function WalletConnect() {
   const [message, setMessage] = useState<string | null>(null);
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<string | null>(null);\n  const [requestAmount, setRequestAmount] = useState("");\n  const [requestUrl, setRequestUrl] = useState<string | null>(null);\n  const [copied, setCopied] = useState(false);
 
   const loadBalance = useCallback(async (address: string) => {
     try {
@@ -179,11 +180,11 @@ export function WalletConnect() {
   };
 
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="flex w-full flex-col items-stretch gap-3">
       {wallet ? (
         <>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-2 text-right">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="min-w-0 flex-1 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-2 text-left">
               <p className="text-[10px] text-emerald-300">CONNECTED · {wallet.network}</p>
               <p className="mt-0.5 font-mono text-[11px] text-slate-200">{wallet.address.slice(0, 6)}…{wallet.address.slice(-6)}</p>
               <p className="mt-1 text-xs font-semibold text-white">{wallet.balance ?? "Loading…"} XLM</p>
@@ -224,7 +225,7 @@ export function WalletConnect() {
           <Wallet size={15} /> {busy ? "Connecting…" : "Connect wallet"}
         </button>
       )}
-      {message && <p role="status" className="max-w-xl text-right text-[10px] leading-5 text-amber-300">{message}</p>}
+      {message && <p role="status" className="max-w-xl text-left text-[10px] leading-5 text-amber-300">{message}</p>}
     </div>
   );
 }
