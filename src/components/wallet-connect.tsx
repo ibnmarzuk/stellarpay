@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { disconnect, getNetwork, isConnected, requestAccess } from "@stellar/varial-sdk";
 import { RefreshCw, Wallet } from "lucide-react";
 import { STELLAR_CONFIG } from "@/lib/stellar/config";
