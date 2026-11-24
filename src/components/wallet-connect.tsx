@@ -66,7 +66,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChan
       const response = await server.payments()
         .forAccount(address)
         .order("desc")
-        .limit(8)
+        .limit(20)
         .call();
       const records = response.records
         .filter((record) => record.type === "payment" && record.asset_type === "native")
