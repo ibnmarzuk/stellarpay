@@ -69,9 +69,7 @@ export default function Home() {
               <p className="text-[11px] text-slate-500">Workspace <span className="px-1 text-slate-700">/</span> Overview</p>
               <h1 className="mt-1 text-lg font-semibold tracking-tight">Dashboard</h1>
             </div>
-            <button disabled className="inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-xs font-medium text-slate-400 opacity-80" title="Wallet connection is coming in the next milestone">
-              <Wallet size={15} /> Connect wallet <span className="ml-1 rounded-md bg-white/[0.07] px-1.5 py-1 text-[9px] text-slate-500">SOON</span>
-            </button>
+            <WalletConnect />
           </header>
 
           <div id="overview" className="mx-auto max-w-[1250px] space-y-8 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
