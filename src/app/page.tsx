@@ -23,7 +23,7 @@ import {
   Wallet,
   Zap,
 } from "lucide-react";
-import { WalletConnect } from "@/components/wallet-connect";
+import { WalletConnect, type PaymentActivity } from "@/components/wallet-connect";
 
 const navigation = [
   { label: "Overview", href: "#overview", icon: LayoutDashboard, active: true },
@@ -32,14 +32,19 @@ const navigation = [
   { label: "Activity", href: "#activity", icon: Clock3, active: false },
 ];
 
-const metrics = [
-  { label: "Total received", value: "—", detail: "Your incoming payments", icon: ArrowDownLeft },
-  { label: "Total sent", value: "—", detail: "Your outgoing payments", icon: ArrowUpRight },
-  { label: "Transactions", value: "—", detail: "Verified on Stellar", icon: CreditCard },
-];
-
 export default function Home() {
   const [balance, setBalance] = useState<string | null>(null);
+  const [activity, setActivity] = useState<PaymentActivity[]>([]);
+  const [accountAddress, setAccountAddress] = useState<string | null>(null);
+  const totalReceived = activity.filter((item) => item.to === accountAddress)
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+  const totalSent = activity.filter((item) => item.from === accountAddress)
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+  const metrics = [
+    { label: "Total received", value: activity.length ? totalReceived.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowDownLeft },
+    { label: "Total sent", value: activity.length ? totalSent.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowUpRight },
+    { label: "Transactions", value: activity.length ? String(activity.length) : "—", detail: "Recent verified XLM payments", icon: CreditCard },
+  ];
 
   return (
     <main className="min-h-screen bg-[#080b11] text-[#f6f8fc]">
@@ -168,7 +173,7 @@ export default function Home() {
                   <div><h3 className="text-[13px] font-semibold">Wallet connection</h3><p className="mt-1 text-[10px] text-slate-500">Connect securely to access your account.</p></div>
                   <span className="grid size-9 place-items-center rounded-xl bg-[#635bff]/10 text-[#a7a2ff]"><Wallet size={16} /></span>
                 </div>
-                <WalletConnect onBalanceChange={setBalance} />
+                <WalletConnect onBalanceChange={setBalance} onActivityChange={setActivity} />
               </div>
               <div className="rounded-[22px] border border-white/[0.08] bg-[#111722] p-5 sm:p-6">
                 <div className="flex items-center justify-between">
@@ -187,11 +192,37 @@ export default function Home() {
                 <div><h3 className="text-[13px] font-semibold">Recent activity</h3><p className="mt-1 text-[10px] text-slate-500">Your verified Stellar transactions will appear here.</p></div>
                 <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#aaa5ff] hover:text-white">Open explorer <ExternalLink size={12} /></a>
               </div>
-              <div className="flex flex-col items-center justify-center px-5 py-12 text-center">
-                <span className="grid size-12 place-items-center rounded-2xl border border-white/[0.08] bg-white/[0.025] text-slate-500"><Clock3 size={19} /></span>
-                <p className="mt-4 text-[12px] font-medium text-slate-300">Your activity will show up here</p>
-                <p className="mt-1 max-w-sm text-[10px] leading-5 text-slate-500">Connect your wallet and make a Testnet payment. Only network-verified activity belongs in this list.</p>
-              </div>
+              {activity.length ? (
+                <div className="divide-y divide-white/[0.06]">
+                  {activity.map((item) => {
+                    const outgoing = item.from === accountAddress;
+                    return (
+                      <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className={`grid size-9 shrink-0 place-items-center rounded-xl ${outgoing ? "bg-amber-400/[0.08] text-amber-300" : "bg-emerald-400/[0.08] text-emerald-300"}`}>
+                            {outgoing ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-medium text-slate-200">{outgoing ? "Sent XLM" : "Received XLM"}</p>
+                            <p className="mt-1 truncate font-mono text-[9px] text-slate-500">{outgoing ? item.to : item.from}</p>
+                            <p className="mt-1 text-[9px] text-slate-600">{new Date(item.created_at).toLocaleString()}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-[12px] font-semibold tabular-nums ${outgoing ? "text-slate-200" : "text-emerald-300"}`}>{outgoing ? "−" : "+"}{Number(item.amount).toFixed(4)} XLM</p>
+                          <a href={`${"https://stellar.expert/explorer/testnet"}/tx/${item.transaction_hash}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-[9px] text-[#aaa5ff] hover:text-white">Verified on Stellar <ExternalLink size={10} /></a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center px-5 py-12 text-center">
+                  <span className="grid size-12 place-items-center rounded-2xl border border-white/[0.08] bg-white/[0.025] text-slate-500"><Clock3 size={19} /></span>
+                  <p className="mt-4 text-[12px] font-medium text-slate-300">No verified payments yet</p>
+                  <p className="mt-1 max-w-sm text-[10px] leading-5 text-slate-500">Connect your wallet to load recent native XLM payment activity from Stellar Testnet.</p>
+                </div>
+              )}
             </section>
 
             <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-5 text-[10px] text-slate-600">
