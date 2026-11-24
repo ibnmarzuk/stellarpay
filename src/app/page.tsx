@@ -41,8 +41,8 @@ export default function Home() {
   const totalSent = activity.filter((item) => item.from === accountAddress)
     .reduce((sum, item) => sum + Number(item.amount), 0);
   const metrics = [
-    { label: "Total received", value: activity.length ? totalReceived.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowDownLeft },
-    { label: "Total sent", value: activity.length ? totalSent.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowUpRight },
+    { label: "Recent received", value: activity.length ? totalReceived.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowDownLeft },
+    { label: "Recent sent", value: activity.length ? totalSent.toFixed(2) : "—", detail: "Recent verified XLM payments", icon: ArrowUpRight },
     { label: "Transactions", value: activity.length ? String(activity.length) : "—", detail: "Recent verified XLM payments", icon: CreditCard },
   ];
 
@@ -173,7 +173,7 @@ export default function Home() {
                   <div><h3 className="text-[13px] font-semibold">Wallet connection</h3><p className="mt-1 text-[10px] text-slate-500">Connect securely to access your account.</p></div>
                   <span className="grid size-9 place-items-center rounded-xl bg-[#635bff]/10 text-[#a7a2ff]"><Wallet size={16} /></span>
                 </div>
-                <WalletConnect onBalanceChange={setBalance} onActivityChange={setActivity} />
+                <WalletConnect onBalanceChange={setBalance} onActivityChange={setActivity} onAccountChange={setAccountAddress} />
               </div>
               <div className="rounded-[22px] border border-white/[0.08] bg-[#111722] p-5 sm:p-6">
                 <div className="flex items-center justify-between">
@@ -210,7 +210,7 @@ export default function Home() {
                         </div>
                         <div className="text-right">
                           <p className={`text-[12px] font-semibold tabular-nums ${outgoing ? "text-slate-200" : "text-emerald-300"}`}>{outgoing ? "−" : "+"}{Number(item.amount).toFixed(4)} XLM</p>
-                          <a href={`${"https://stellar.expert/explorer/testnet"}/tx/${item.transaction_hash}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-[9px] text-[#aaa5ff] hover:text-white">Verified on Stellar <ExternalLink size={10} /></a>
+                          <a href={`https://stellar.expert/explorer/testnet/tx/${item.transaction_hash}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-[9px] text-[#aaa5ff] hover:text-white">Verified on Stellar <ExternalLink size={10} /></a>
                         </div>
                       </div>
                     );
