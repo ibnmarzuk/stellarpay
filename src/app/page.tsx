@@ -100,6 +100,11 @@ export default function Home() {
               <span className="grid size-9 place-items-center rounded-full border border-white/10 bg-[#171d29] text-[11px] font-semibold text-slate-300">SP</span>
             </div>
           </header>
+          <nav className="flex gap-2 overflow-x-auto border-b border-white/[0.06] px-5 py-3 lg:hidden sm:px-8">
+            {navigation.map(({ label, href, icon: Icon }) => (
+              <a key={label} href={href} className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-white/[0.07] bg-[#111722] px-3 py-2 text-[10px] font-medium text-slate-400 transition hover:border-[#635bff]/40 hover:text-white"><Icon size={13} />{label}</a>
+            ))}
+          </nav>
 
           <div id="overview" className="mx-auto max-w-[1320px] space-y-7 px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
