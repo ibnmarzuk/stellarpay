@@ -36,6 +36,7 @@ export type PaymentActivity = {
 type WalletConnectProps = {
   onBalanceChange?: (balance: string | null) => void;
   onActivityChange?: (activity: PaymentActivity[]) => void;
+  onAccountChange?: (address: string | null) => void;
 };
 
 type WalletState = {
@@ -46,7 +47,7 @@ type WalletState = {
 
 const server = new Server(STELLAR_CONFIG.horizonUrl);
 
-export function WalletConnect({ onBalanceChange, onActivityChange }: WalletConnectProps) {
+export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChange }: WalletConnectProps) {
   const [wallet, setWallet] = useState<WalletState | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -134,6 +135,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange }: WalletConne
       }
 
       setWallet({ address: access.address, balance: null, network: network.network });
+      onAccountChange?.(access.address);
       onBalanceChange?.(null);
       await loadBalance(access.address);
     } catch (error) {
@@ -152,6 +154,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange }: WalletConne
         return;
       }
       setWallet(null);
+      onAccountChange?.(null);
       setTxHash(null);
       setRequestUrl(null);
       onBalanceChange?.(null);
