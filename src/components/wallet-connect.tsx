@@ -289,7 +289,7 @@ export function WalletConnect({ onBalanceChange, onActivityChange, onAccountChan
             <input id="stellar-amount" inputMode="decimal" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0.00" className="w-full rounded-lg border border-white/10 bg-[#080b12] px-3 py-2.5 text-xs text-white outline-none placeholder:text-slate-600 focus:border-[#8b85ff]/70" />
             <p className="mt-2 text-[9px] leading-5 text-slate-500">Review the recipient and amount in your wallet before approving. Network fees apply.</p>
             <button type="submit" disabled={busy || !recipient.trim() || !amount.trim()} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#635bff] px-4 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#7770ff] disabled:cursor-not-allowed disabled:opacity-50"><Send size={13} /> {busy ? "Processing…" : "Review and send"}</button>
-            {txHash && <a className="mt-3 block break-all text-[10px] leading-5 text-emerald-300 underline underline-offset-4" href={`${STELLAR_CONFIG.explorerUrl}/tx/${txHash}`} target="_blank" rel="noreferrer">View transaction: {txHash}</a>}
+            {txHash && <a className="mt-3 inline-flex items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-2 text-[10px] font-semibold text-emerald-300 hover:bg-emerald-400/[0.1]" href={`/receipt/${txHash}`}>View verified receipt <Check size={12} /></a>}
           </form>
 
           {showRequestForm && <section id="request" className="w-full rounded-xl border border-white/[0.08] bg-[#0c121c] p-4 text-left">
